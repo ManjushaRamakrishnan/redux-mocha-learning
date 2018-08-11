@@ -1,10 +1,16 @@
 const { createStore } = require('redux');
 const TrelloApp = require('.');
 const should = require('chai').should();
+const deepFreeze = require('deep-freeze');
 
 describe('TrelloApp', function() {
-  it('should ADD_CARD', function() {
-    const currState = {
+
+  beforeEach(function() {
+    
+  });
+  it.only('should ADD_CARD', function() {
+
+    const currState = deepFreeze({
       currentBoard: {
         id: 'b1',
         name: 'MyBoard',
@@ -24,7 +30,9 @@ describe('TrelloApp', function() {
           cards: []
         }]
       }
-    }
+    });
+
+    const store = createStore(TrelloApp, currState);
 
     const action = {
       type: 'ADD_CARD',
@@ -34,7 +42,6 @@ describe('TrelloApp', function() {
       }
     };
 
-    const store = createStore(TrelloApp, currState);
     store.dispatch(action);
 
     store.getState().should.have.property('currentBoard');
@@ -44,14 +51,38 @@ describe('TrelloApp', function() {
     store.getState().currentBoard.lists[0].cards[2].should.have.property('text').and.equal('ghi');
   });
 
-  /*it('should EDIT_BOARD', function() {
+  it('should EDIT_BOARD', function() {
+    const action = {
+      type: 'EDIT_BOARD',
+      payload: {
+        name: 'Board1'
+      }
+    };
 
+    store.dispatch(action);
+    console.log(store.getState());
+    store.getState().should.have.property('currentBoard');
+    store.getState().currentBoard.should.have.property('name').and.equal('Board1');
   });
 
   it('should CREATE_LIST', function() {
-
+      const action = {
+        type: 'CREATE_LIST',
+        payload: {
+          name: 'List 3',
+          cards: []
+        }
+      };
+  
+      store.dispatch(action);
+      console.log(store.getState());
+      store.getState().should.have.property('currentBoard');
+      store.getState().currentBoard.should.have.property('lists').and.be.an('array').of.length(3);
+      store.getState().currentBoard.lists[2].should.have.property('cards').and.be.an('array').of.length(0);
+      store.getState().currentBoard.lists[2].should.have.property('id');
+      store.getState().currentBoard.lists[2].should.have.property('name').and.equal('List 3');
   });
-
+/*
   it('should EDIT_LIST', function() {
 
   });

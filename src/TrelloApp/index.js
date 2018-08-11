@@ -18,8 +18,29 @@ function TrelloApp(currState, action) {
 
     case 'EDIT_BOARD':
       // TODO:
+      const board = currState.currentBoard;
+      const index = currState.currentBoard.lists.indexOf(list);
+      const newBoard = Object.assign({}, board, {
+        name: payload.name
+      });
+      return Object.assign({}, currState, {
+        currentBoard: newBoard
+      });
+
     case 'CREATE_LIST':
       // TODO:
+      const board = currState.currentBoard;
+      const newBoard = Object.assign({}, board, {
+        lists: [...board.lists, {id: ''+Math.random()*12345678, name: action.payload.name, cards: action.payload.cards}]
+      });
+      return Object1.assign({}, currState, {
+        currentBoard: Object.assign({}, currState.currentBoard, {
+          lists: [
+            ...currState.currentBoard.lists,
+            newBoard.lists
+          ]
+        })
+      });
     case 'EDIT_LIST':
       // TODO:
     case 'MOVE_LIST':
@@ -27,8 +48,31 @@ function TrelloApp(currState, action) {
 
     case 'EDIT_CARD':
       // TODO:
+
     case 'MOVE_CARD':
       // TODO:
+      const fromList = currState.currentBoard.lists.find(list => list.id === action.payload.fromListId);
+      const toList = currState.currentBoard.lists.find(list => list.id === action.payload.toListId);
+      const fromIndex = currState.currentBoard.lists.indexOf(fromList);
+      const toIndex = currState.currentBoard.lists.indexOf(toList);
+      const oldCardIndex = currState.currentBoard.lists[fromIndex].indexOf(action.payload.cardId);
+      const newFromList = Object.assign({}, fromList, {
+        cards: [...fromList.cards.slice(0, oldCardIndex), ...fromList.cards.slice(oldCardIndex + 1)]
+      });
+      const newToList = Object.assign({}, toList, {
+        cards: [...toList.cards, { id: '' + Math.random()*89324234113, text: action.payload.text }]
+      });
+      
+      return Object.assign({}, currState, {
+        currentBoard: Object.assign({}, currState.currentBoard, {
+          lists: [
+            ...currState.currentBoard.lists,
+            Object.assign([], array, { [fromIndex]: newFromList }),
+            Object.assign([], array, { [toIndex]: newToList })
+          ]
+        })
+      });
+
     default:
       return currState;
   }
